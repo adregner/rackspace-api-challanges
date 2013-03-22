@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+// Challenge 7: Write a script that will create 2 Cloud Servers and add them as nodes
+// to a new Cloud Load Balancer. Worth 3 Points
+
+var iniparser = require('iniparser'),
+    util = require('util'),
+    rackspace = require('rackspace-openstack');
+
+function log(message) {
+  var args = [message];
+  for(var i=1; i<arguments.length; i++) {
+    args[i] = typeof(arguments[i]) != "string" ? util.inspect(arguments[i]) : arguments[i];
+  }
+  util.log(util.format.apply(this, args));
+}
+
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
+var client = rackspace.createClient({auth:{username:config.username, apiKey:config.api_key}});
+
+client.authorize(function(err) {
+  if(err) {
+    log("Error authenticating: %s", err);
+    process.exit(1);
+    return;
+  }
+
+  log("Authorized %s, ", config.username);
+
+  
+});
+
+// vim: tabstop=2 expandtab syntax=javascript

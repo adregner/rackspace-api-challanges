@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+// Challenge 6: Write a script that creates a CDN-enabled container in Cloud Files. Worth 1 Point
+
+var iniparser = require('iniparser'),
+    util = require('util'),
+    cloudfiles = require('cloudfiles');
+
+function log(message) {
+  var args = [message];
+  for(var i=1; i<arguments.length; i++) {
+    args[i] = typeof(arguments[i]) != "string" ? util.inspect(arguments[i]) : arguments[i];
+  }
+  util.log(util.format.apply(this, args));
+}
+
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
+var cfclient = cloudfiles.createClient({auth:{username:config.username, apiKey:config.api_key}});
+
+cfclient.setAuth(function(err) {
+  if(err) {
+    log("Error authenticating: %s", err);
+    process.exit(1);
+    return;
+  }
+
+  log("Authorized %s, ", config.username);
+
+  
+});
+
+// vim: tabstop=2 expandtab syntax=javascript
