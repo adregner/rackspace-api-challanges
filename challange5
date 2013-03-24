@@ -28,7 +28,20 @@ client.authorize(function(err) {
 
   log("Authorized %s, building database instance", config.username);
 
-  
+  var username = "andrew",
+      password = "kittens",
+      dbname = "farm";
+
+  client.createDatabaseInstanceWithWait({
+    name: 'challange5-db',
+    size: 1,
+    flavor: 1,
+    databases: [ { name: dbname } ],
+    users: [ { name: username, password: password, databases: [ {name:dbname} ] } ],
+  }, function(err, instance) {
+    log("Instance finished: %s", instance.hostname);
+    log("database: %s -- username: %s -- password: %s", dbname, username, password);
+  });
 });
 
 // vim: tabstop=2 expandtab syntax=javascript
