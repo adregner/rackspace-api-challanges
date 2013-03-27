@@ -9,4 +9,4 @@ Install Dependencies
 
 We are awaiting these pull requests to make it into the npm published modules:
 - https://github.com/nodejitsu/node-cloudfiles/pull/51
-- https://github.com/kenperkins/rackspace-openstack/pull/7
+- https://github.com/kenperkins/rackspace-openstack/pull/6
