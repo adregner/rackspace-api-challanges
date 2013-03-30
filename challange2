@@ -59,7 +59,7 @@ client.authorize(function(err) {
           name: 'new-' + image.name
         }, function(err, server) {
           log("Waiting for server %s to finish", server.name);
-          server.setWait({'accessIPv4':{$ne:''}, 'status':'ACTIVE'}, { interval:2500, }, function(err, server) {
+          server.setWait(function(s) { return s.accessIPv4 && s.accessIPv4!='' }, { interval:2500, }, function(err, server) {
             log("%s: ip=%s, password=%s, id=%s", server.name, server.accessIPv4, server.adminPass, server.id);
           });
         });
