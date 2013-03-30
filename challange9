@@ -17,8 +17,9 @@ function log(message) {
   util.log(util.format.apply(this, args));
 }
 
-var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
-var client = rackspace.createClient({auth:{username:config.username, apiKey:config.api_key}});
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials'),
+    creds = config.rackspace_cloud;
+var client = rackspace.createClient({auth:{username:creds.username, apiKey:creds.api_key}});
 
 if(process.argv.length < 4) {
   console.error("usage: node "+process.argv[1]+" FQDN IMAGE FLAVOR");
@@ -36,7 +37,7 @@ client.authorize(function(err) {
     return;
   }
 
-  log("Authorized %s", config.username);
+  log("Authorized %s", creds.username);
 
   client.createServer({image:image, flavor:flavor, name:fqdn}, function(err, server) {
     log("Building server %s", fqdn);

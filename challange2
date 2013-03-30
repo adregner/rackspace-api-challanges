@@ -15,8 +15,9 @@ function log(message) {
   util.log(util.format.apply(this, args));
 }
 
-var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
-var client = rackspace.createClient({auth:{username:config.username, apiKey:config.api_key}});
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials'),
+    creds = config.rackspace_cloud;
+var client = rackspace.createClient({auth:{username:creds.username, apiKey:creds.api_key}});
 
 client.authorize(function(err) {
   if(err) {
@@ -25,7 +26,7 @@ client.authorize(function(err) {
     return;
   }
 
-  log("Authorized %s, picking a server", config.username);
+  log("Authorized %s, picking a server", creds.username);
 
   client.getServers(function(err, servers) {
     var targetServer = null;

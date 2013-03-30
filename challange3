@@ -32,8 +32,9 @@ function resolvePath(string) {
   return path.resolve(string);
 }
 
-var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
-var client = cloudfiles.createClient({auth:{username:config.username, apiKey:config.api_key}});
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials'),
+    creds = config.rackspace_cloud;
+var client = cloudfiles.createClient({auth:{username:creds.username, apiKey:creds.api_key}});
 var upload_queue = new bagpipe(3);
 
 if(process.argv.length < 4) {

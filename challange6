@@ -21,8 +21,9 @@ function log(message) {
   util.log(util.format.apply(this, args));
 }
 
-var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
-var cfclient = cloudfiles.createClient({auth:{username:config.username, apiKey:config.api_key}});
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials'),
+    creds = config.rackspace_cloud;
+var cfclient = cloudfiles.createClient({auth:{username:creds.username, apiKey:creds.api_key}});
 
 // the cloudfiles modules doesn't support this,
 // so we have to write our own function
@@ -59,7 +60,7 @@ cfclient.setAuth(function(err) {
     return;
   }
 
-  log("Authorized %s, ", config.username);
+  log("Authorized %s, ", creds.username);
 
   cfclient.createContainer('challange6-CDN', function(err, container) {
     log("Created container %s", container.name);

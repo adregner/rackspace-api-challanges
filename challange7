@@ -20,8 +20,9 @@ function log(message) {
   util.log(util.format.apply(this, args));
 }
 
-var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
-var client = rackspace.createClient({auth:{username:config.username, apiKey:config.api_key}});
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials'),
+    creds = config.rackspace_cloud;
+var client = rackspace.createClient({auth:{username:creds.username, apiKey:creds.api_key}});
 
 client.authorize(function(err) {
   if(err) {
@@ -30,7 +31,7 @@ client.authorize(function(err) {
     return;
   }
 
-  log("Authorized %s, building %d servers...", config.username, count);
+  log("Authorized %s, building %d servers...", creds.username, count);
 
   var finished_servers = [];
 
