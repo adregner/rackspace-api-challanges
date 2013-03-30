@@ -1,0 +1,82 @@
+#!/usr/bin/env node
+
+/* Challange 10: Write an application that will:
+ *  - Create 2 servers, supplying a ssh key to be installed at /root/.ssh/authorized_keys.
+ *  - Create a load balancer
+ *  - Add the 2 new servers to the LB
+ *  - Set up LB monitor and custom error page.
+ *  - Create a DNS record based on a FQDN for the LB VIP.
+ *  - Write the error page html to a file in cloud files for backup.
+ * Whew! That one is worth 8 points!
+ */
+
+var iniparser = require('iniparser'),
+    util = require('util'),
+    Stream = require('stream'),
+    cloudfiles = require('cloudfiles'),
+    rackspace = require('rackspace-openstack');
+
+function log(message) {
+  var args = [message];
+  for(var i=1; i<arguments.length; i++) {
+    args[i] = typeof(arguments[i]) != "string" ? util.inspect(arguments[i]) : arguments[i];
+  }
+  util.log(util.format.apply(this, args));
+}
+
+var config = iniparser.parseSync(process.env['HOME']+'/.rackspace_cloud_credentials');
+var client = rackspace.createClient({auth:{username:config.username, apiKey:config.api_key}});
+var cfclient = cloudfiles.createClient({auth:{username:config.username, apiKey:config.api_key}});
+
+// instead of making a temporary file to just upload and delete, we make this in-memory stream that
+// the cloudfiles module can read and upload just as well.
+function StringReader(str) { this.data = str }
+util.inherits(StringReader, Stream);
+StringReader.prototype.resume = function() {
+  this.emit('data', this.data);
+  this.emit('end');
+  this.emit('close');
+}
+
+// Settings
+var container_name = "LB-backup",
+    file_name = "errorpage.html",
+    server_prefix = "mongrel",
+    ssh_pubkey = "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArbg8B8H99BciVTNtBd/LSjmuNMtKVjY97xZ6A6vUnw" +
+      "DqerMRHT73/5eOXqkQnPl9rm778akxSWkwZioqOPF4Xomvma6J3Vqj6XUFErk5+wLuii0PDmxcVAhqLBOz5ZXRxEN" +
+      "N71Qt8PoSZJSc2hBc1Yh+SGtSU2rVMFf1pg+7r46oeeDYga1dvfwnlOk4KCNbnxhDqZsUZNn2MvipR9u5R32VG4cZ" +
+      "TFWAaijuMJsaTd1F1MJHLVPZTs7vr4hyHL+Dt9hioRjxWo6TGtpcaVQyD5fD1ebwYJTp2Db2Y3YHyPo4TRkJoOXxU" +
+      "kerilO/DQAweRjdSV3Sn8b9mhhr9Yljqw== andrew@aregner.com",
+    error_page = new StringReader("<html><body>" +
+      "<h1>Oops!</h1><h2>Something just broke.</h2>" +
+      "<p>Try clicking <a href='#' onclick='javascript:window.history(-1)'>here</a> to go back" +
+      "to where you just were.  Or <a href='#' onclick='javascript:window.refresh()'>click here</a> " +
+      "to reload the page and try again.  Or <a href='http://public.aregner.com/bubblewrap.swf'>here</a> " +
+      "if you are just bored.</p></body></html>"),
+    new_container = new cloudfiles.Container(cfclient, {name:container_name});
+
+cfclient.setAuth(function(err) {
+  if(err) {
+    log("Error authenticating: %s", err);
+    process.exit(1);
+    return;
+  }
+
+  log("Authorized %s for Cloud Files", config.username);
+
+  // make a container and upload a file
+}
+
+client.authorize(function(err) {
+  if(err) {
+    log("Error authenticating: %s", err);
+    process.exit(1);
+    return;
+  }
+
+  log("Authorized %s for Rackspace API", config.username);
+
+  // do lots of stuff
+}
+
+// vim: tabstop=2 expandtab syntax=javascript
