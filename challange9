@@ -49,7 +49,7 @@ client.authorize(function(err) {
     }, { interval:1000, }, function(err, server) {
       var serverIP = _.select(server.addresses['public'], function(a) { return a.version == 4 })[0].addr;
       log("%s: ip=%s, password=%s, id=%s, status=%s%s", server.name, serverIP, server.adminPass, server.id,
-        server['status'], (server['status'] == 'ACTIVE' ? '' : server.progress));
+        server['status'], (server['status'] == 'ACTIVE' && server.progress ? '' : ' ('+server.progress+'%)'));
       add_record(fqdn, serverIP);
     });
   });
