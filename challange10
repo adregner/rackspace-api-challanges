@@ -48,15 +48,12 @@ function when_ready(obj, callback) {
         clearInterval(waitingInterval);
         callback(null, err);
       }
-      else if(obj.status != 'ACTIVE') {
-        return;
-      }
-      else {
+      else if(obj.status == 'ACTIVE') {
         clearInterval(waitingInterval);
         callback(obj);
       }
     });
-  });
+  }, 750);
 }
 
 // Settings
@@ -160,8 +157,7 @@ client.authorize(function(err) {
             log("Erorr setting error page: %s", err);
             process.exit(1);
           }
-          console.log('setErrorPage response', err, errorpage);
-          log("LB error page set (%s bytes)", errorpage.length);
+          log("LB error page set");
 
           when_ready(lb, function(lb) {
             // set http health monitor
