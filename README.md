@@ -13,3 +13,8 @@ _TODO: specify versions in install command above for those that have been patche
 Patches submitted upstream
 ------------
 I have had to write some small and large patches for upstream modules needed to complete these challanges.  A summary of them will eventually be added below.
+
+*Still pending merge upstream*
+- https://github.com/kenperkins/rackspace-openstack/pull/6 (setWait callback on createServer)
+- https://github.com/kenperkins/rackspace-openstack/pull/9 (fix expected response on LoadBalancer.setErrorPage)
+- https://github.com/kenperkins/rackspace-openstack/pull/10 (implement cloud networks)
